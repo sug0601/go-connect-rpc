@@ -4,8 +4,9 @@ import (
 	"context"
 	"log"
 
-	"example.com/src/db"
+	"example.com/model"
 	"example.com/src/infra"
+	"github.com/uptrace/bun"
 )
 
 func main() {
@@ -13,10 +14,30 @@ func main() {
 	defer dbConn.Close()
 
 	ctx := context.Background()
-	_, err := dbConn.NewCreateTable().Model((*db.Greeting)(nil)).IfNotExists().Exec(ctx)
-	if err != nil {
+
+	// 追加する
+	models := []interface{}{
+		(*model.Greeting)(nil),
+		(*model.User)(nil),
+	}
+
+	if err := createTables(ctx, dbConn, models); err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("Greeting table created!")
+	log.Println("All tables created successfully!")
+}
+
+func createTables(ctx context.Context, db *bun.DB, models []interface{}) error {
+	for _, model := range models {
+		_, err := db.NewCreateTable().
+			Model(model).
+			IfNotExists().
+			Exec(ctx)
+		if err != nil {
+			return err
+		}
+		log.Printf("Table for %T created or already exists", model)
+	}
+	return nil
 }

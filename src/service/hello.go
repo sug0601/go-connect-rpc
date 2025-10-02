@@ -4,17 +4,17 @@ import (
 	"context"
 	"fmt"
 
-	"example.com/src/db"
+	"example.com/src/repository"
 
 	examplev1 "example.com/gen/go/proto"
 	"github.com/bufbuild/connect-go"
 )
 
 type HelloServer struct {
-	greetingRepo db.GreetingRepository
+	greetingRepo repository.GreetingRepository
 }
 
-func NewHelloServer(repo db.GreetingRepository) *HelloServer {
+func NewHelloServer(repo repository.GreetingRepository) *HelloServer {
 	return &HelloServer{greetingRepo: repo}
 }
 

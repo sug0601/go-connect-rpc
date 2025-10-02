@@ -23,9 +23,15 @@ func (s *HelloServer) SayHello(
 	req *connect.Request[examplev1.HelloRequest],
 ) (*connect.Response[examplev1.HelloResponse], error) {
 
-	// DBに保存
-	if err := s.greetingRepo.Insert(ctx, req.Msg.Name); err != nil {
+	exists, err := s.greetingRepo.Exists(ctx, req.Msg.Name)
+	if err != nil {
 		return nil, err
+	}
+
+	if !exists {
+		if err := s.greetingRepo.Insert(ctx, req.Msg.Name); err != nil {
+			return nil, err
+		}
 	}
 
 	res := connect.NewResponse(&examplev1.HelloResponse{

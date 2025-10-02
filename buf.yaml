@@ -1,4 +1,0 @@
-version: v1
-name: "example.com/bspot-backend"
-deps:
-  - buf.build/protocolbuffers/protoc-gen-validate

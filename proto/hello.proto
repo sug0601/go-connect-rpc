@@ -4,10 +4,8 @@ package example.v1;
 
 option go_package = "example.com/gen/go/proto";
 
-import "validate/validate.proto";  // PGV プラグイン用
-
 message HelloRequest {
-  string name = 1 [(validate.rules).string = {min_len: 3, max_len: 50}];
+  string name = 1;
 }
 
 message HelloResponse {

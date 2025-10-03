@@ -22,13 +22,11 @@ func (s *UserServer) CreateUser(
 	req *connect.Request[examplev1.CreateUserRequest],
 ) (*connect.Response[examplev1.CreateUserResponse], error) {
 
-	// メールアドレスの重複チェック
 	existingUser, err := s.userRepo.FindByEmail(ctx, req.Msg.Email)
 	if err == nil && existingUser != nil {
 		return nil, connect.NewError(connect.CodeAlreadyExists, fmt.Errorf("email already exists"))
 	}
 
-	// ユーザー作成
 	user, err := s.userRepo.Insert(ctx, req.Msg.Name, req.Msg.Email)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)

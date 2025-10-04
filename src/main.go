@@ -5,15 +5,28 @@ import (
 	"net/http"
 
 	"example.com/src/app"
+	"example.com/src/config"
 )
 
 func main() {
-	a := app.Initialize("postgres://user:pass@localhost:5433/connect?sslmode=disable")
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("Failed to load configuration: %v", err)
+	}
+
+	if cfg.Debug {
+		log.Printf("Configuration loaded: %+v", cfg)
+	}
+
+	// アプリケーション初期化
+	a := app.Initialize(cfg.DatabaseDSN)
 	defer a.Close()
 
+	// ハンドラー登録
 	mux := http.NewServeMux()
 	a.RegisterHandlers(mux)
 
-	log.Println("Server listening on :8080")
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	// サーバー起動
+	log.Printf("Server listening on %s (ENV: %s)", cfg.ServerAddress(), cfg.Environment)
+	log.Fatal(http.ListenAndServe(cfg.ServerAddress(), mux))
 }

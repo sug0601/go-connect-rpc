@@ -8,6 +8,7 @@ require (
 	github.com/bufbuild/connect-go v1.10.0
 	github.com/fatih/color v1.18.0
 	github.com/google/uuid v1.6.0
+	github.com/joho/godotenv v1.5.1
 	github.com/uptrace/bun v1.2.15
 	github.com/uptrace/bun/dialect/pgdialect v1.2.15
 	github.com/uptrace/bun/driver/pgdriver v1.2.15

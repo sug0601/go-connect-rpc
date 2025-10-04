@@ -7,6 +7,7 @@ help:
 	@echo "  make run       - Air でホットリロード"
 	@echo "  make migrate   - cmd/migrate/main.go を実行"
 	@echo "  make build     - main.go をビルド"
+	@echo "  make test      - 統合テストを実行"
 
 .PHONY: run
 run:
@@ -22,3 +23,8 @@ migrate:
 .PHONY: build
 build:
 	$(GO) build -o bin/app main.go
+
+.PHONY: test
+test:
+	@echo "Running integration tests..."
+	DB_DSN=postgres://postgres:postgres@localhost:5433/connect?sslmode=disable $(GO) test ./src/... -v

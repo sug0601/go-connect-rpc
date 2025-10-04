@@ -2,10 +2,16 @@ syntax = "proto3";
 
 package example.v1;
 
+import "buf/validate/validate.proto";
+
 option go_package = "example.com/gen/go/proto";
 
 message HelloRequest {
-  string name = 1;
+  string name = 1 [(buf.validate.field).string = {
+    min_len: 1,
+    max_len: 100,
+    pattern: "^[a-zA-Z0-9\\s]+$"
+  }];
 }
 
 message HelloResponse {

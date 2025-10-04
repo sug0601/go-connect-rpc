@@ -1,16 +1,14 @@
-version: v1
+version: v2
 managed:
-  enabled: true
-  go_package_prefix:
-    default: example.com/gen/go
-    except:
-      - buf.build/googleapis/googleapis
+  enabled: false
+inputs:
+  - directory: proto
 plugins:
-  - plugin: buf.build/protocolbuffers/go
-    out: gen/go
+  - remote: buf.build/protocolbuffers/go
+    out: gen/go/proto
     opt:
       - paths=source_relative
-  - plugin: buf.build/bufbuild/connect-go
-    out: gen/go
+  - remote: buf.build/bufbuild/connect-go
+    out: gen/go/proto
     opt:
       - paths=source_relative

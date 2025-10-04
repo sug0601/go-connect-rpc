@@ -3,7 +3,7 @@ package app
 import (
 	"net/http"
 
-	"example.com/gen/go/proto/examplev1connect"
+	"example.com/gen/go/proto/protoconnect"
 	"example.com/src/infra"
 	"example.com/src/middleware"
 	"example.com/src/repository"
@@ -35,9 +35,22 @@ func (a *App) Close() {
 }
 
 func (a *App) RegisterHandlers(mux *http.ServeMux) {
-	helloPath, helloHandler := examplev1connect.NewHelloServiceHandler(a.Services.HelloServer, connect.WithInterceptors(middleware.LoggingInterceptor()))
+	interceptors := connect.WithInterceptors(
+		middleware.ValidationInterceptor(),
+		middleware.LoggingInterceptor(),
+	)
+
+	// HelloService
+	helloPath, helloHandler := protoconnect.NewHelloServiceHandler(
+		a.Services.HelloServer,
+		interceptors,
+	)
 	mux.Handle(helloPath, helloHandler)
 
-	userPath, userHandler := examplev1connect.NewUserServiceHandler(a.Services.UserServer, connect.WithInterceptors(middleware.LoggingInterceptor()))
+	// UserService
+	userPath, userHandler := protoconnect.NewUserServiceHandler(
+		a.Services.UserServer,
+		interceptors,
+	)
 	mux.Handle(userPath, userHandler)
 }

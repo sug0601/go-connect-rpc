@@ -13,7 +13,7 @@ run:
 ifeq ($(AIR),)
 	$(error "Air is not installed. Install it with: go install github.com/cosmtrek/air@v1.62.3")
 endif
-	air
+	buf generate && air
 
 .PHONY: migrate
 migrate:

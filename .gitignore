@@ -1,3 +1,4 @@
 gen
 main
-tmp.env
+tmp
+.env

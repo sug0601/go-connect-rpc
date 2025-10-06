@@ -12,6 +12,11 @@ import (
 	"github.com/uptrace/bun"
 )
 
+type Service struct {
+    Server     interface{}
+    NewHandler func(s interface{}, interceptors ...connect.HandlerOption) (string, http.Handler)
+}
+
 type App struct {
 	DB       *bun.DB
 	Repos    *repository.Repositories

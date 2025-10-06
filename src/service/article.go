@@ -3,8 +3,10 @@ package service
 import (
 	"context"
 	"fmt"
+	"log"
 
 	examplev1 "example.com/gen/go/proto"
+	"example.com/src/helper"
 	"example.com/src/repository"
 	"github.com/bufbuild/connect-go"
 )
@@ -21,8 +23,18 @@ func (s *ArticleServer) ListArticles(
 	ctx context.Context,
 	req *connect.Request[examplev1.ListArticlesRequest],
 ) (*connect.Response[examplev1.ListArticlesResponse], error) {
+	p := req.Msg.Pagination
+	if p == nil {
+		p = &examplev1.PaginationRequest{
+			Page:     1,
+			PageSize: 10,
+		}
+	}
 
-	articles, err := s.articleRepo.FindAll(ctx)
+	pagination := helper.NewPagination(int(p.Page), int(p.PageSize))
+
+
+	articles, totalCount, err := s.articleRepo.FindAll(ctx, pagination.Offset, pagination.PageSize)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
@@ -38,6 +50,11 @@ func (s *ArticleServer) ListArticles(
 
 	res := connect.NewResponse(&examplev1.ListArticlesResponse{
 		Articles: protoArticles,
+		Pagination: &examplev1.PaginationResponse{
+			Page:       p.Page,
+			PageSize:   p.PageSize,
+			TotalCount: int32(totalCount),
+		},
 	})
 	return res, nil
 }

@@ -4,6 +4,19 @@ package example.v1;
 
 option go_package = "example.com/gen/go/proto";
 
+message PaginationRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message PaginationResponse {
+  int32 total_count = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+  int32 total_pages = 4;
+}
+
+
 message ArticleSummary {
   string id = 1;
   string title = 2;
@@ -17,18 +30,23 @@ message Article {
   string content = 4;
 }
 
-message ListArticlesRequest {}
+message ListArticlesRequest {
+  PaginationRequest pagination = 1;
+}
+
 message ListArticlesResponse {
   repeated ArticleSummary articles = 1;
+  PaginationResponse pagination = 2;
 }
 
 message GetArticleRequest {
   string article_id = 1;
 }
+
 message GetArticleResponse {
   Article article = 1;
 }
-// サービス
+
 service ArticleService {
   rpc ListArticles(ListArticlesRequest) returns (ListArticlesResponse);
   rpc GetArticle(GetArticleRequest) returns (GetArticleResponse);

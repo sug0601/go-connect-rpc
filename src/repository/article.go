@@ -8,7 +8,7 @@ import (
 )
 
 type ArticleRepository interface {
-	FindAll(ctx context.Context) ([]*model.Article, error)
+	FindAll(ctx context.Context, offset, limit int) ([]*model.Article, int64, error)
 	FindByID(ctx context.Context, id string) (*model.Article, error)
 	Insert(ctx context.Context, article *model.Article) error
 }
@@ -21,16 +21,27 @@ func NewBunArticleRepository(db *bun.DB) *BunArticleRepository {
 	return &BunArticleRepository{db: db}
 }
 
-func (r *BunArticleRepository) FindAll(ctx context.Context) ([]*model.Article, error) {
+func (r *BunArticleRepository) FindAll(ctx context.Context, offset, limit int) ([]*model.Article, int64, error) {
 	var articles []*model.Article
-	err := r.db.NewSelect().
+
+	totalCount, err := r.db.NewSelect().
+		Model((*model.Article)(nil)).
+		Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	err = r.db.NewSelect().
 		Model(&articles).
 		Order("created_at DESC").
+		Offset(offset).
+		Limit(limit).
 		Scan(ctx)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	return articles, nil
+
+	return articles, int64(totalCount), nil
 }
 
 func (r *BunArticleRepository) FindByID(ctx context.Context, id string) (*model.Article, error) {

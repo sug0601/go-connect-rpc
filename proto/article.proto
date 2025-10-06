@@ -4,18 +4,7 @@ package example.v1;
 
 option go_package = "example.com/gen/go/proto";
 
-message PaginationRequest {
-  int32 page = 1;
-  int32 page_size = 2;
-}
-
-message PaginationResponse {
-  int32 total_count = 1;
-  int32 page = 2;
-  int32 page_size = 3;
-  int32 total_pages = 4;
-}
-
+import "pagination.proto";
 
 message ArticleSummary {
   string id = 1;

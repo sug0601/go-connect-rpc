@@ -8,6 +8,7 @@ help:
 	@echo "  make migrate   - cmd/migrate/main.go を実行"
 	@echo "  make build     - main.go をビルド"
 	@echo "  make test      - 統合テストを実行"
+	@echo "  make seed      - シードを実行"
 
 .PHONY: run
 run:
@@ -28,3 +29,8 @@ build:
 test:
 	@echo "Running integration tests..."
 	DB_DSN=postgres://postgres:postgres@localhost:5433/connect?sslmode=disable $(GO) test ./src/... -v
+
+
+.PHONY: seed
+seed:
+	$(GO) run cmd/seed/main.go

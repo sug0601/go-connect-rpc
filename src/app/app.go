@@ -40,17 +40,29 @@ func (a *App) RegisterHandlers(mux *http.ServeMux) {
 		middleware.LoggingInterceptor(),
 	)
 
-	// HelloService
-	helloPath, helloHandler := protoconnect.NewHelloServiceHandler(
-		a.Services.HelloServer,
-		interceptors,
-	)
-	mux.Handle(helloPath, helloHandler)
+	services := []Service{
+		{
+			Server: a.Services.HelloServer,
+			NewHandler: func(s interface{}, interceptors ...connect.HandlerOption) (string, http.Handler) {
+				return protoconnect.NewHelloServiceHandler(s.(*service.HelloServer), interceptors...)
+			},
+		},
+		{
+			Server: a.Services.UserServer,
+			NewHandler: func(s interface{}, interceptors ...connect.HandlerOption) (string, http.Handler) {
+				return protoconnect.NewUserServiceHandler(s.(*service.UserServer), interceptors...)
+			},
+		},
+		{
+			Server: a.Services.ArticleServer,
+			NewHandler: func(s interface{}, interceptors ...connect.HandlerOption) (string, http.Handler) {
+				return protoconnect.NewArticleServiceHandler(s.(*service.ArticleServer), interceptors...)
+			},
+		},
+	}
 
-	// UserService
-	userPath, userHandler := protoconnect.NewUserServiceHandler(
-		a.Services.UserServer,
-		interceptors,
-	)
-	mux.Handle(userPath, userHandler)
+	for _, svc := range services {
+		path, handler := svc.NewHandler(svc.Server, interceptors)
+		mux.Handle(path, handler)
+	}
 }

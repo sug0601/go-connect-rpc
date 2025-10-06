@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package example.v1;
+
+option go_package = "example.com/gen/go/proto";
+
+message ArticleSummary {
+  string id = 1;
+  string title = 2;
+  string thumbnail = 3;
+}
+
+message Article {
+  string id = 1;
+  string title = 2;
+  string thumbnail = 3;
+  string content = 4;
+}
+
+message ListArticlesRequest {}
+message ListArticlesResponse {
+  repeated ArticleSummary articles = 1;
+}
+
+message GetArticleRequest {
+  string article_id = 1;
+}
+message GetArticleResponse {
+  Article article = 1;
+}
+// サービス
+service ArticleService {
+  rpc ListArticles(ListArticlesRequest) returns (ListArticlesResponse);
+  rpc GetArticle(GetArticleRequest) returns (GetArticleResponse);
+}

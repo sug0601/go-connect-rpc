@@ -12,3 +12,11 @@ plugins:
     out: gen/go/proto
     opt:
       - paths=source_relative
+
+  - remote: buf.build/apple/swift
+    out: gen/swift
+    opt:
+      - Visibility=public
+
+  - remote: buf.build/connectrpc/swift
+    out: gen/swift

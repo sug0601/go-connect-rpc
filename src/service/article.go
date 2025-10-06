@@ -27,17 +27,17 @@ func (s *ArticleServer) ListArticles(
 	if p == nil {
 		p = &examplev1.PaginationRequest{
 			Page:     1,
-			PageSize: 10,
+			PageSize: 1,
 		}
 	}
 
 	pagination := helper.NewPagination(int(p.Page), int(p.PageSize))
 
-
 	articles, totalCount, err := s.articleRepo.FindAll(ctx, pagination.Offset, pagination.PageSize)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
+
 
 	var protoArticles []*examplev1.ArticleSummary
 	for _, a := range articles {
@@ -48,14 +48,19 @@ func (s *ArticleServer) ListArticles(
 		})
 	}
 
+	totalPages := int32((totalCount + int64(p.PageSize) - 1) / int64(p.PageSize))
+
 	res := connect.NewResponse(&examplev1.ListArticlesResponse{
 		Articles: protoArticles,
 		Pagination: &examplev1.PaginationResponse{
 			Page:       p.Page,
 			PageSize:   p.PageSize,
 			TotalCount: int32(totalCount),
+			TotalPages: totalPages,
 		},
 	})
+
+	log.Printf("Returning response with %d articles", len(protoArticles))
 	return res, nil
 }
 

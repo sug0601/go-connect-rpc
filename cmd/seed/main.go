@@ -85,7 +85,43 @@ func seed(ctx context.Context, db *bun.DB) error {
 			Thumbnail: "https://picsum.photos/seed/3/400/300",
 			Content:   "This is the third seeded article.",
 		},
+		{
+			Title:     "Fourth Article",
+			Thumbnail: "https://picsum.photos/seed/4/400/300",
+			Content:   "This is the fourth seeded article.",
+		},
+		{
+			Title:     "Fifth Article",
+			Thumbnail: "https://picsum.photos/seed/5/400/300",
+			Content:   "This is the fifth seeded article.",
+		},
+		{
+			Title:     "Sixth Article",
+			Thumbnail: "https://picsum.photos/seed/6/400/300",
+			Content:   "This is the sixth seeded article.",
+		},
+		{
+			Title:     "Seventh Article",
+			Thumbnail: "https://picsum.photos/seed/7/400/300",
+			Content:   "This is the seventh seeded article.",
+		},
+		{
+			Title:     "Eighth Article",
+			Thumbnail: "https://picsum.photos/seed/8/400/300",
+			Content:   "This is the eighth seeded article.",
+		},
+		{
+			Title:     "Ninth Article",
+			Thumbnail: "https://picsum.photos/seed/9/400/300",
+			Content:   "This is the ninth seeded article.",
+		},
+		{
+			Title:     "Tenth Article",
+			Thumbnail: "https://picsum.photos/seed/10/400/300",
+			Content:   "This is the tenth seeded article.",
+		},
 	}
+
 
 	_, err = db.NewInsert().Model(&articles).Exec(ctx)
 	if err != nil {
